@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from datetime import *
-import pandas as pd
 import time
 
 todayObject = datetime.date(datetime.now())
@@ -60,16 +59,20 @@ def clickCalendarDate(day: datetime, driver:webdriver) -> None: #TODO Change the
             driver.find_element_by_xpath(i).click()
     
 def readTimeSlots(driver:webdriver) -> dict:
-    rows = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr")
-    rows = int(len(rows))
+    # # rows = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr")
+    # # rows = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table/tbody")
+    # rows = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div")
+    # # rows = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table")
+    # "/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[1]")
+    # print("Just Print(Rows): {}".format(rows))
     
     validXPaths = []
     validXPathsDict = {} #key : val ---> room: arr[] == 1 then dont do it, if 2 == click()
-    print("Num Rows: ", rows)
-    for row in range(rows + 1): # range is inclusive
+    # print("Num Rows in readTimeSlots: ", rows)
+    for row in range(17 + 1): # range is inclusive, WAS range(rows + 1)
         tempList = [] #! Values
         tempRoom = "" #! key
-        print("Line 70 for loop: {}".format(row))
+        # print("Line 70 for loop: {}".format(row))
         for col in range(24):
             
             xPath = "/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[1]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[{}]/td/a[{}]".format(row, col)
@@ -78,11 +81,11 @@ def readTimeSlots(driver:webdriver) -> dict:
                 validXPaths.append(cell)
                 tempRoom = cell.get_attribute("title")[:8] 
                 tempList.append(cell)
-                print("Cell (Line 76): {}".format(cell))
+                # print("Cell (Line 76): {}".format(cell))
                 
             except:
                 pass
-        print(tempList)
+        # print(tempList)
         validXPathsDict[tempRoom] = tempList
     
     filteredDict = {}
@@ -110,9 +113,9 @@ def readTimeSlots(driver:webdriver) -> dict:
             # print("Len of Appended: {}\n\n".format(len(superDuperFilteredDict[key])))
     
     # print("Len of Super Duper Filtered: {}".format(len(superDuperFilteredDict)))
-    print("\n\n {} \n\n".format(validXPathsDict))
-    print("\n\n {} \n\n".format(filteredDict))
-    print("\n\n {} \n\n".format(superDuperFilteredDict))
+    # print("\n\n {} \n\n".format(validXPathsDict))
+    # print("\n\n {} \n\n".format(filteredDict))
+    # print("\n\n {} \n\n".format(superDuperFilteredDict))
     return superDuperFilteredDict
     
 def reserveRoom(driver:webdriver, availableDates: dict, secondFloor=True) -> None:
@@ -121,30 +124,32 @@ def reserveRoom(driver:webdriver, availableDates: dict, secondFloor=True) -> Non
         testValues = availableDates[lastKey]
         for values in testValues:
             values.click()
+            print("CLICKED! Second Floor")
     else:
         firstKey = list(availableDates)[0]
         testValues = availableDates[firstKey]
         for values in testValues:
             values.click()
+            print("CLICKED! First Floor")
     
     # firstName, lastName, email, universityID, school, [CLICK BOOKING]
-    # with open("/Users/tahpramen/Desktop/BookingInformation/bookingInfo.txt") as file: #! Change this once its on raspberry pi 
-    #     lines = file.readlines()
-    #     firstName = lines[0]
-    #     lastName = lines[1]
-    #     studentEmail = lines[2]
-    #     studentID = lines[3]
-    #     dropDownNum = int(lines[4])
+    with open("/Users/tahpramen/Desktop/BookingInformation/bookingInfo.txt") as file: #! Change this once its on raspberry pi 
+        lines = file.readlines()
+        firstName = lines[0]
+        lastName = lines[1]
+        studentEmail = lines[2]
+        studentID = lines[3]
+        dropDownNum = int(lines[4])
         
-    #     continueButton = driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[2]/div/button[1]")
-    #     continueButton.click()
+        continueButton = driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[2]/div/button[1]")
+        continueButton.click()
         
-    #     driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[2]/div[1]/input").send_keys(firstName)
-    #     driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[2]/div[2]/input").send_keys(lastName)
-    #     driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[3]/div/input").send_keys(studentEmail)
-    #     driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[4]/div/input").send_keys(studentID)
-    #     dropDownMenu = Select(driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[6]/div/select"))
-    #     dropDownMenu.select_by_value("Engineering")
+        driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[2]/div[1]/input").send_keys(firstName)
+        driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[2]/div[2]/input").send_keys(lastName)
+        driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[3]/div/input").send_keys(studentEmail)
+        driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[4]/div/input").send_keys(studentID)
+        dropDownMenu = Select(driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[6]/div/select"))
+        dropDownMenu.select_by_value("Engineering")
         
         
     

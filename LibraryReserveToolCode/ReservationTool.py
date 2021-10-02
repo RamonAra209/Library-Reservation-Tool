@@ -6,7 +6,7 @@ PATH = "/Users/tahpramen/Desktop/LibraryReserveProject/chromedriver"
 driver = webdriver.Chrome(PATH)
 
 driver.get("https://pacific.libcal.com/booking/stocktoncampus")
-tempDay = datetime(2021, 10, 1)
+tempDay = datetime(2021, 10, 2)
 clickCalendarDate(tempDay, driver)
 returnedDict = readTimeSlots(driver)
 reserveRoom(driver, returnedDict, secondFloor=False) #! Make sure to comment back in the reserve function after done testing

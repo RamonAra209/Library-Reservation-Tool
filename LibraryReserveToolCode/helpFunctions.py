@@ -41,17 +41,23 @@ def clickCalendarDate(day: datetime, driver:webdriver) -> None: #TODO Change the
     threeValidDays = []
     threeValidXPaths = []
     for row in range(rows + 1):
-        for col in range(7):
+        for col in range(8): #! was 7
             xPath = "/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[3]/div/div/table/tbody/tr[{}]/td[{}]/a".format(row, col)
+            print("\nCalled Col For Loop \n ")
             try: 
                 threeValidDays.append(driver.find_element_by_xpath(xPath))
                 threeValidXPaths.append(xPath)
             except: 
                 pass
     for i in threeValidXPaths:
+        print("\n Valid Xpath: {} \n".format(i))
+        print("\n Valid Xpath Day Txt: {}".format(driver.find_element_by_xpath(i).text))
         if int(driver.find_element_by_xpath(i).text) == day.day: #TODO Change this so that it takes nextMondayOrWednesday
             #! day.day()
             driver.find_element_by_xpath(i).click()
+            print("Clicked Day!")
+        else: 
+            print("Did Not Click Day!")
     
 def readTimeSlots(driver:webdriver) -> dict:
     validXPaths = []
@@ -119,7 +125,7 @@ def reserveRoom(driver:webdriver, availableDates: dict, secondFloor=True) -> Non
         dropDownMenu = Select(driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[6]/div/select"))
         dropDownMenu.select_by_value("Engineering")
         confirmBooking = driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[8]/div/button")
-        # confirmBooking.click()
+        confirmBooking.click()
     
 def sendEmailNotification() -> None:
     pass

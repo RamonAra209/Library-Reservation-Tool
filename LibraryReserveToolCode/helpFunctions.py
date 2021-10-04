@@ -5,17 +5,18 @@ from datetime import *
 import time
 
 todayObject = datetime.date(datetime.now())
+acceptedDate = None
 
-def monthConversion(today: datetime) -> int:
+def monthConversion(today):
     return (today.month - 1)
 
-def dayConversion(today: datetime) -> int:
+def dayConversion(today):
     return today.day
 
-def yearConversion(today: datetime) -> int:
+def yearConversion(today):
     return today.year
 
-def isMondayWednesday(today: datetime) -> bool:
+def isMondayWednesday(today):
     return (today.weekday() == 0 or today.weekday() == 2)  
     
 def next_weekday(date, weekday): #! Status = Done
@@ -24,13 +25,13 @@ def next_weekday(date, weekday): #! Status = Done
         day_gap += 7
     return date + timedelta(days=day_gap)
 
-def nextMondayOrWednesday(today:datetime) -> datetime: #! Status = Done
+def nextMondayOrWednesday(today): #! Status = Done
     if today.weekday() == 0 or today.weekday() == 1:
         return next_weekday(today, 2) # returns next wednesday
     elif today.weekday() > 1 and today.weekday() <= 6:
         return next_weekday(today, 0) # returns next monday
 
-def clickCalendarDate(day: datetime, driver:webdriver) -> None: #TODO Change the day parameter to today:datetime
+def clickCalendarDate(day, driver): #TODO Change the day parameter to today:datetime
     #! OR, we can call nextMondayOrWednesday outside of the function, pass it through when calling here, parameter = day: datetime
     search = Select(driver.find_element_by_class_name("ui-datepicker-month"))
     search.select_by_index(monthConversion(day)) #TODO if monday/wed fall into next month, we need to change the month here
@@ -43,23 +44,23 @@ def clickCalendarDate(day: datetime, driver:webdriver) -> None: #TODO Change the
     for row in range(rows + 1):
         for col in range(8): #! was 7
             xPath = "/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[3]/div/div/table/tbody/tr[{}]/td[{}]/a".format(row, col)
-            print("\nCalled Col For Loop \n ")
+            # print("\nCalled Col For Loop \n ")
             try: 
                 threeValidDays.append(driver.find_element_by_xpath(xPath))
                 threeValidXPaths.append(xPath)
             except: 
                 pass
     for i in threeValidXPaths:
-        print("\n Valid Xpath: {} \n".format(i))
-        print("\n Valid Xpath Day Txt: {}".format(driver.find_element_by_xpath(i).text))
+        # print("\n Valid Xpath: {} \n".format(i))
+        # print("\n Valid Xpath Day Txt: {}".format(driver.find_element_by_xpath(i).text))
         if int(driver.find_element_by_xpath(i).text) == day.day: #TODO Change this so that it takes nextMondayOrWednesday
-            #! day.day()
             driver.find_element_by_xpath(i).click()
-            print("Clicked Day!")
+            # print("Clicked Day!")
         else: 
-            print("Did Not Click Day!")
+            # print("Did Not Click Day!")
+            pass
     
-def readTimeSlots(driver:webdriver) -> dict:
+def readTimeSlots(driver):
     validXPaths = []
     validXPathsDict = {} #key : val ---> room: arr[] == 1 then dont do it, if 2 == click()
     for row in range(17 + 1): #! Hard Coded 17 rooms into the code
@@ -94,7 +95,7 @@ def readTimeSlots(driver:webdriver) -> dict:
             superDuperFilteredDict[key] = tempList
     return superDuperFilteredDict
     
-def reserveRoom(driver:webdriver, availableDates: dict, secondFloor=True) -> None:
+def reserveRoom(driver, availableDates, secondFloor=True):
     if secondFloor == True:
         lastKey = list(availableDates)[-1]
         testValues = availableDates[lastKey]
@@ -126,7 +127,4 @@ def reserveRoom(driver:webdriver, availableDates: dict, secondFloor=True) -> Non
         dropDownMenu.select_by_value("Engineering")
         confirmBooking = driver.find_element_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[2]/div[3]/form/fieldset/div[3]/div[8]/div/button")
         confirmBooking.click()
-    
-def sendEmailNotification() -> None:
-    pass
         

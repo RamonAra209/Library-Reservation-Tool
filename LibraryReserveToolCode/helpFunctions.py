@@ -4,6 +4,11 @@ from selenium.webdriver.support.select import Select
 from datetime import *
 import time
 
+#! Time Slots correspond to line 88
+TIME_SLOT_ONE = "12:00pm to 1:00pm" 
+TIME_SLOT_TWO = "1:00pm to 2:00pm" 
+BOOKING_INFO_TXT_FILE = "/Users/tahpramen/Desktop/VIrtual Environments/Library Reserve Tool Venv + helper Programs/BookingInformation/bookingInfo.txt"
+
 todayObject = datetime.date(datetime.now())
 acceptedDate = None
 
@@ -81,7 +86,7 @@ def readTimeSlots(driver):
     for key, values in validXPathsDict.items():
         tempList = []
         for val in values:
-            if ("12:00pm to 1:00pm" in val.get_attribute("title") or "1:00pm to 2:00pm" in val.get_attribute("title") and \
+            if (TIME_SLOT_ONE in val.get_attribute("title") or TIME_SLOT_TWO in val.get_attribute("title") and \
                 "Project Room" not in val.get_attribute("title")):
                 tempList.append(val)
         filteredDict[key] = tempList
@@ -108,7 +113,7 @@ def reserveRoom(driver, availableDates, secondFloor=True):
             values.click()
             
     # firstName, lastName, email, universityID, school, [CLICK BOOKING]
-    with open("/Users/tahpramen/Desktop/BookingInformation/bookingInfo.txt") as file: #! Change this once its on raspberry pi 
+    with open(BOOKING_INFO_TXT_FILE) as file: #! Change this once its on raspberry pi 
         lines = file.readlines()
         firstName = lines[0]
         lastName = lines[1]

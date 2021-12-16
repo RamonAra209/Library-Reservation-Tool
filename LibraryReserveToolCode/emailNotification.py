@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 
-BURNER_EMAIL_LOGIN_PATH = "/Users/tahpramen/Desktop/VIrtual Environments/Library Reserve Tool Venv + helper Programs/BookingInformation/burnerEmailLogin.txt"
+BURNER_EMAIL_LOGIN_PATH = "/home/pi/Desktop/LibraryReservationToolBookingInfo/burnerEmailLogin.txt"
 
 def sendEmailNotification(message):
     with open(BURNER_EMAIL_LOGIN_PATH, 'r') as file:
@@ -11,10 +11,6 @@ def sendEmailNotification(message):
         senderEmail = lines[0]
         recieverEmail = lines[1]
         password = lines[2]
-        
-        print("Sender Email:    {}".format(senderEmail))
-        print("Sender Password: {}".format(password))
-        print("Receiver Email:  {}".format(recieverEmail))
         
         msg = MIMEText(message)
         msg['Subject'] = "Library Reservation Tool Error"
@@ -26,4 +22,3 @@ def sendEmailNotification(message):
         server.login(senderEmail, password)
         server.sendmail(senderEmail, recieverEmail, msg.as_string())
         server.quit()
-    

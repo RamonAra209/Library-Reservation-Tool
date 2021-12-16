@@ -4,13 +4,10 @@ from selenium.webdriver.support.select import Select
 from datetime import *
 import time
 
-#! Time Slots correspond to line 88
-TIME_SLOT_ONE = "12:00pm to 1:00pm" 
-TIME_SLOT_TWO = "1:00pm to 2:00pm" 
-BOOKING_INFO_TXT_FILE = "/Users/tahpramen/Desktop/VIrtual Environments/Library Reserve Tool Venv + helper Programs/BookingInformation/bookingInfo.txt"
-
 todayObject = datetime.date(datetime.now())
-acceptedDate = None
+BOOKING_INFO_PATH = "/home/pi/Desktop/LibraryReservationToolBookingInfo/bookingInfo.txt"
+
+preferred_rooms = ["Room 110", "Room 111", "Room 112", "Room 113", "Room 210", "Room 211", "Room 212", "Room 213"]
 
 def monthConversion(today):
     return (today.month - 1)
@@ -86,7 +83,7 @@ def readTimeSlots(driver):
     for key, values in validXPathsDict.items():
         tempList = []
         for val in values:
-            if (TIME_SLOT_ONE in val.get_attribute("title") or TIME_SLOT_TWO in val.get_attribute("title") and \
+            if ("12:00pm to 1:00pm" in val.get_attribute("title") or "1:00pm to 2:00pm" in val.get_attribute("title") and \
                 "Project Room" not in val.get_attribute("title")):
                 tempList.append(val)
         filteredDict[key] = tempList
@@ -101,19 +98,31 @@ def readTimeSlots(driver):
     return superDuperFilteredDict
     
 def reserveRoom(driver, availableDates, secondFloor=True):
-    if secondFloor == True:
-        lastKey = list(availableDates)[-1]
-        testValues = availableDates[lastKey]
-        for values in testValues:
-            values.click()
-    else:
-        firstKey = list(availableDates)[0]
-        testValues = availableDates[firstKey]
-        for values in testValues:
-            values.click()
+    flag = False
+
+    for room in preferred_rooms:
+        if room in availableDates.keys():
+            print(room)
+            times = availableDates[room]
+            for slot in times:
+                slot.click()
+            flag = True
+            break
+         
+    if flag == False:
+        if secondFloor == True:
+            lastKey = list(availableDates)[-1]
+            testValues = availableDates[lastKey]
+            for values in testValues:
+                values.click()
+        else:
+            firstKey = list(availableDates)[0]
+            testValues = availableDates[firstKey]
+            for values in testValues:
+                values.click()
             
     # firstName, lastName, email, universityID, school, [CLICK BOOKING]
-    with open(BOOKING_INFO_TXT_FILE) as file: #! Change this once its on raspberry pi 
+    with open(BOOKING_INFO_PATH) as file: #! Change this once its on raspberry pi 
         lines = file.readlines()
         firstName = lines[0]
         lastName = lines[1]

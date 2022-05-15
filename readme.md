@@ -1,3 +1,6 @@
+# DEPRECATED 
+Please see [Library Reservation Tool V2](https://github.com/RamonAra209/Library-Reservation-Tool-V2)!
+
 ## The problem
 
 Imagine, you're a computer science student. You and your friends hold study sessions in your
